@@ -1,0 +1,18 @@
+{
+  "task_id": "parser-null-handling",
+  "goal": "Handle null values in the parser without changing output schema.",
+  "changed_files": [
+    "src/parser.py",
+    "tests/test_parser.py"
+  ],
+  "verification": [
+    {
+      "command": "pytest tests/test_parser.py -q",
+      "status": "passed",
+      "notes": "Covers null input and existing valid input."
+    }
+  ],
+  "diff_text": "diff --git a/src/parser.py b/src/parser.py\n+if value is None:\n+    return default\n",
+  "commit_message": "Handle null parser values",
+  "notes": "Small parser change with focused regression test."
+}

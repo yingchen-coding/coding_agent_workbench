@@ -1,0 +1,17 @@
+{
+  "task_id": "unsafe-helper",
+  "goal": "Add helper behavior.",
+  "changed_files": [
+    "src/helper.py"
+  ],
+  "verification": [
+    {
+      "command": "pytest -q",
+      "status": "failed",
+      "notes": "One regression failed."
+    }
+  ],
+  "diff_text": "diff --git a/src/helper.py b/src/helper.py\n+eval(user_input)\n",
+  "commit_message": "fix",
+  "notes": ""
+}

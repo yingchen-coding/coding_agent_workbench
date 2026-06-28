@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coding-agent-workbench"
+version = "0.1.0"
+description = "Deterministic evaluator for coding-agent attempts"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Ying Chen"}]
+license = {text = "MIT"}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Testing",
+]
+
+[project.scripts]
+coding-agent-workbench = "coding_agent_workbench.cli:main"
+caw = "coding_agent_workbench.cli:main"
