@@ -6,6 +6,7 @@ import json
 import sys
 from pathlib import Path
 
+from .adoption import adoption_report, load_adoption_records, render_adoption_markdown
 from .io import blank_attempt, load_attempt, render_table, save_json
 from .scoring import check_catalog, evaluate
 
@@ -22,6 +23,13 @@ def build_parser() -> argparse.ArgumentParser:
     eval_cmd.add_argument("attempt", type=Path)
     eval_cmd.add_argument("--format", choices=["json", "table"], default="json")
     eval_cmd.add_argument("--fail-under", type=int, default=0)
+
+    adoption = sub.add_parser(
+        "adoption-report",
+        help="summarize coding-agent adoption with task-success denominators",
+    )
+    adoption.add_argument("records", type=Path)
+    adoption.add_argument("--format", choices=["json", "markdown"], default="json")
 
     sub.add_parser("list-checks", help="list deterministic scoring checks")
     return parser
@@ -45,6 +53,13 @@ def main(argv: list[str] | None = None) -> int:
         if evaluation.score < args.fail_under:
             print(f"score {evaluation.score} is below threshold {args.fail_under}", file=sys.stderr)
             return 1
+        return 0
+    if args.command == "adoption-report":
+        report = adoption_report(load_adoption_records(args.records))
+        if args.format == "markdown":
+            print(render_adoption_markdown(report), end="")
+        else:
+            print(json.dumps(report, indent=2))
         return 0
     raise AssertionError(args.command)
 

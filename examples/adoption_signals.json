@@ -1,0 +1,38 @@
+[
+  {
+    "tool": "local-coding-agent",
+    "period": "2026-W26",
+    "workflow": "small bug fixes",
+    "attempted_tasks": 10,
+    "completed_tasks": 8,
+    "accepted_changes": 8,
+    "reverted_changes": 0,
+    "verified_tasks": 9,
+    "tokens": 240000,
+    "cost": 9.6
+  },
+  {
+    "tool": "local-coding-agent",
+    "period": "2026-W26",
+    "workflow": "feature work",
+    "attempted_tasks": 6,
+    "completed_tasks": 4,
+    "accepted_changes": 3,
+    "reverted_changes": 1,
+    "verified_tasks": 4,
+    "tokens": 220000,
+    "cost": 8.8
+  },
+  {
+    "tool": "baseline-human-only",
+    "period": "2026-W26",
+    "workflow": "small bug fixes",
+    "attempted_tasks": 5,
+    "completed_tasks": 5,
+    "accepted_changes": 5,
+    "reverted_changes": 0,
+    "verified_tasks": 5,
+    "tokens": 0,
+    "cost": 0
+  }
+]

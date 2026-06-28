@@ -38,6 +38,12 @@ List scoring checks:
 python -m coding_agent_workbench list-checks
 ```
 
+Summarize adoption without confusing usage growth for task success:
+
+```bash
+python -m coding_agent_workbench adoption-report examples/adoption_signals.json --format markdown
+```
+
 ## What It Scores
 
 - tests passed or failed
@@ -47,6 +53,32 @@ python -m coding_agent_workbench list-checks
 - privacy leaks in diff text
 - weak commit messages
 - missing evidence for the stated task
+
+## Adoption Reports
+
+`adoption-report` turns weekly or monthly coding-agent rollout records into a grounded adoption
+verdict. It requires task denominators, not just token volume or headline usage growth.
+
+Each record can include:
+
+```json
+{
+  "tool": "local-coding-agent",
+  "period": "2026-W26",
+  "workflow": "small bug fixes",
+  "attempted_tasks": 10,
+  "completed_tasks": 8,
+  "accepted_changes": 8,
+  "reverted_changes": 0,
+  "verified_tasks": 9,
+  "tokens": 240000,
+  "cost": 9.6
+}
+```
+
+The report emits completion rate, acceptance rate, revert rate, verification coverage, cost per
+completed task, and an `adopt` / `pilot` / `do-not-scale` verdict. This keeps coding-agent
+adoption claims honest: usage is interesting, but verified completed work is the signal.
 
 ## Attempt Schema
 

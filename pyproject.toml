@@ -9,7 +9,7 @@ description = "Deterministic evaluator for coding-agent attempts"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{name = "Ying Chen"}]
-license = {text = "MIT"}
+license = "MIT"
 classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Software Development :: Quality Assurance",
