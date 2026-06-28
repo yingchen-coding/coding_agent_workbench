@@ -1,5 +1,9 @@
 # Coding Agent Workbench
 
+[![CI](https://github.com/yingchen-coding/coding_agent_workbench/actions/workflows/ci.yml/badge.svg)](https://github.com/yingchen-coding/coding_agent_workbench/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 Evaluate coding-agent attempts with deterministic checks instead of vibes.
 
 The workbench takes a JSON attempt record and grades whether an agent produced a small, tested,
