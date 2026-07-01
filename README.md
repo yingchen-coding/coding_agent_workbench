@@ -68,15 +68,6 @@ python -m coding_agent_workbench adoption-report examples/adoption_signals.json 
 - weak commit messages
 - missing evidence for the stated task
 
-## Local Review Gate
-
-```bash
-scripts/pr_review_check.sh
-```
-
-This runs compile checks, tests, Ruff when available, secret scanning, and commit-history
-attribution checks.
-
 ## Adoption Reports
 
 `adoption-report` turns weekly or monthly coding-agent rollout records into a grounded adoption
