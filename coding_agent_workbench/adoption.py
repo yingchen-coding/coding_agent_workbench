@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -90,9 +91,14 @@ def _as_float(value: Any, index: int, field: str) -> float:
     if value is None or value == "":
         return 0.0
     try:
-        return float(value)
+        number = float(value)
     except (TypeError, ValueError):
         raise ValueError(f"record {index} field {field!r} must be a number, got {value!r}") from None
+    # "nan"/"inf" parse as floats but are not real measurements — and int(NaN) would raise a cryptic
+    # error downstream; reject them with the same clear, located message.
+    if not math.isfinite(number):
+        raise ValueError(f"record {index} field {field!r} must be a finite number, got {value!r}")
+    return number
 
 
 def _as_int(value: Any, index: int, field: str) -> int:

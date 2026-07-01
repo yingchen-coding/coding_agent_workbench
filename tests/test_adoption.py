@@ -135,3 +135,13 @@ def test_save_json_is_atomic_no_temp_left(tmp_path):
     save_json({"k": "v"}, p)
     assert [f.name for f in tmp_path.iterdir() if ".tmp." in f.name] == []
     assert json.loads(p.read_text())["k"] == "v"
+
+
+def test_load_adoption_records_rejects_non_finite_numbers(tmp_path):
+    # "nan"/"inf" parse as floats but are not real measurements; int(NaN) would raise a cryptic
+    # error, so they must be rejected with the same clear, located message as any other bad number.
+    for bad in ("nan", "inf", "-inf"):
+        path = tmp_path / "adoption.json"
+        path.write_text(json.dumps([{"tool": "a", "attempted_tasks": bad}]), encoding="utf-8")
+        with pytest.raises(ValueError, match="must be a finite number"):
+            load_adoption_records(path)
