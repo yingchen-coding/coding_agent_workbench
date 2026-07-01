@@ -99,3 +99,39 @@ def test_cli_can_emit_adoption_markdown():
     )
     assert "# Coding Agent Adoption Report" in result.stdout
     assert "local-coding-agent" in result.stdout
+
+
+def test_load_adoption_records_reports_bad_number_with_location(tmp_path):
+    # A non-numeric field must fail with a clear, located error — never a raw traceback, and never a
+    # silent coercion to 0 (which could flip the adopt/pilot/do-not-scale verdict).
+    path = tmp_path / "adoption.json"
+    path.write_text(json.dumps([{"tool": "a", "attempted_tasks": "lots"}]), encoding="utf-8")
+    with pytest.raises(ValueError, match=r"record 1 field 'attempted_tasks' must be a number"):
+        load_adoption_records(path)
+
+
+def test_load_adoption_records_rejects_fractional_task_count(tmp_path):
+    path = tmp_path / "adoption.json"
+    path.write_text(json.dumps([{"tool": "a", "attempted_tasks": 3.5}]), encoding="utf-8")
+    with pytest.raises(ValueError, match="must be a whole number"):
+        load_adoption_records(path)
+
+
+def test_load_adoption_records_accepts_numeric_strings_and_whole_floats(tmp_path):
+    path = tmp_path / "adoption.json"
+    path.write_text(json.dumps([{
+        "tool": "a", "attempted_tasks": "5", "completed_tasks": 5.0,
+        "tokens": "1200.5", "cost": "0.4",
+    }]), encoding="utf-8")
+    records = load_adoption_records(path)
+    assert records[0]["attempted_tasks"] == 5
+    assert records[0]["completed_tasks"] == 5
+    assert records[0]["tokens"] == 1200.5
+
+
+def test_save_json_is_atomic_no_temp_left(tmp_path):
+    from coding_agent_workbench.io import save_json
+    p = tmp_path / "out.json"
+    save_json({"k": "v"}, p)
+    assert [f.name for f in tmp_path.iterdir() if ".tmp." in f.name] == []
+    assert json.loads(p.read_text())["k"] == "v"

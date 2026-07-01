@@ -83,16 +83,35 @@ def render_adoption_markdown(report: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _as_float(value: Any, index: int, field: str) -> float:
+    """Coerce a record field to float with a clear, located error instead of a raw traceback.
+    This tool drives an adopt/pilot/do-not-scale decision, so a bad number is reported — never
+    silently zeroed, which could quietly flip the verdict."""
+    if value is None or value == "":
+        return 0.0
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"record {index} field {field!r} must be a number, got {value!r}") from None
+
+
+def _as_int(value: Any, index: int, field: str) -> int:
+    number = _as_float(value, index, field)
+    if number != int(number):
+        raise ValueError(f"record {index} field {field!r} must be a whole number, got {value!r}")
+    return int(number)
+
+
 def _normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any]:
     record = {
         "tool": str(raw.get("tool") or raw.get("agent") or raw.get("provider") or "unknown"),
         "period": str(raw.get("period") or ""),
         "workflow": str(raw.get("workflow") or "unknown"),
-        "tokens": float(raw.get("tokens") or 0),
-        "cost": float(raw.get("cost") or 0),
+        "tokens": _as_float(raw.get("tokens"), index, "tokens"),
+        "cost": _as_float(raw.get("cost"), index, "cost"),
     }
     for field in REQUIRED_NUMERIC_FIELDS:
-        value = int(raw.get(field) or 0)
+        value = _as_int(raw.get(field), index, field)
         if value < 0:
             raise ValueError(f"record {index} field {field} cannot be negative")
         record[field] = value
