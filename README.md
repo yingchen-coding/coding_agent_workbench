@@ -12,6 +12,20 @@ where the important question is:
 
 > Did the agent actually complete the coding task without hidden regressions or risky edits?
 
+## Why It Matters
+
+Coding-agent adoption is easy to overstate. Token volume, chat count, or "developer activity" do
+not prove that useful work landed. The workbench focuses on the evidence that matters:
+
+- Was there a concrete task?
+- Did the agent change a bounded set of files?
+- Were tests or verification commands recorded?
+- Did the diff introduce risky patterns or private data?
+- Would a reviewer accept this as a real completed change?
+
+Use it to compare agents, dogfood local workflows, or turn messy agent traces into an honest
+engineering scorecard.
+
 ## Install
 
 ```bash
@@ -54,6 +68,15 @@ python -m coding_agent_workbench adoption-report examples/adoption_signals.json 
 - weak commit messages
 - missing evidence for the stated task
 
+## Local Review Gate
+
+```bash
+scripts/pr_review_check.sh
+```
+
+This runs compile checks, tests, Ruff when available, secret scanning, and commit-history
+attribution checks.
+
 ## Adoption Reports
 
 `adoption-report` turns weekly or monthly coding-agent rollout records into a grounded adoption
@@ -95,4 +118,3 @@ adoption claims honest: usage is interesting, but verified completed work is the
   "notes": "Short evidence summary."
 }
 ```
-
