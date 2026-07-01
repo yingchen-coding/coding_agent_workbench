@@ -96,8 +96,3 @@ adoption claims honest: usage is interesting, but verified completed work is the
 }
 ```
 
-## Validate
-
-```bash
-scripts/pr_review_check.sh
-```
