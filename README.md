@@ -14,6 +14,12 @@ where the important question is:
 
 > Did the agent actually complete the coding task without hidden regressions or risky edits?
 
+## Star This If
+
+- You run coding agents and want an adopt / pilot / do-not-scale call, not a gut feeling.
+- You want deterministic scoring of completion, acceptance, revert, and verification rates.
+- You need a reproducible way to compare agents on your own session records.
+
 ## Why It Matters
 
 Coding-agent adoption is easy to overstate. Token volume, chat count, or "developer activity" do
