@@ -55,6 +55,33 @@ def test_local_path_in_diff_is_flagged():
     assert any(finding.code == "CAW304" for finding in result.findings)
 
 
+def test_large_diff_threshold_is_exact_not_off_by_one():
+    # A diff with exactly max_diff_lines lines (ending with a trailing newline) must NOT trigger
+    # CAW103; trailing-newline inflation used to count it as max+1 and false-fire the finding.
+    at_limit = "line\n" * 10
+    attempt = Attempt(
+        task_id="t",
+        goal="g",
+        changed_files=["a.py"],
+        verification=[Verification(command="pytest", status="passed")],
+        diff_text=at_limit,
+        notes="verified",
+    )
+    result = evaluate(attempt, max_diff_lines=10)
+    assert not any(f.code == "CAW103" for f in result.findings)
+    # one line over the limit must trigger
+    over_limit = "line\n" * 11
+    result2 = evaluate(
+        Attempt(
+            task_id="t", goal="g", changed_files=["a.py"],
+            verification=[Verification(command="pytest", status="passed")],
+            diff_text=over_limit, notes="verified",
+        ),
+        max_diff_lines=10,
+    )
+    assert any(f.code == "CAW103" for f in result2.findings)
+
+
 def test_attempt_round_trip(tmp_path):
     path = tmp_path / "attempt.json"
     path.write_text(

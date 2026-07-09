@@ -73,7 +73,7 @@ def evaluate(attempt: Attempt, *, max_files: int = 8, max_diff_lines: int = 500)
             )
             score -= 25
 
-    diff_lines = attempt.diff_text.count("\n") + (1 if attempt.diff_text else 0)
+    diff_lines = len(attempt.diff_text.splitlines())
     if diff_lines > max_diff_lines:
         findings.append(
             Finding(
