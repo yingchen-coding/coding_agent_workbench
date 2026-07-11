@@ -1,6 +1,7 @@
 import json
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -82,6 +83,9 @@ def test_adoption_markdown_shows_verdict_and_warnings():
     assert "Warnings" in markdown
 
 
+_EXAMPLES = Path(__file__).parents[1] / "examples"
+
+
 def test_cli_can_emit_adoption_markdown():
     result = subprocess.run(
         [
@@ -89,7 +93,7 @@ def test_cli_can_emit_adoption_markdown():
             "-m",
             "coding_agent_workbench",
             "adoption-report",
-            "examples/adoption_signals.json",
+            str(_EXAMPLES / "adoption_signals.json"),
             "--format",
             "markdown",
         ],
