@@ -66,6 +66,12 @@ Summarize adoption without confusing usage growth for task success:
 python -m coding_agent_workbench adoption-report examples/adoption_signals.json --format markdown
 ```
 
+Audit whether raw context truncation drops the active request:
+
+```bash
+python -m coding_agent_workbench context-audit ~/.claude/projects --budget 256
+```
+
 ## What It Scores
 
 - tests passed or failed
@@ -75,6 +81,29 @@ python -m coding_agent_workbench adoption-report examples/adoption_signals.json 
 - privacy leaks in diff text
 - weak commit messages
 - missing evidence for the stated task
+
+## Context Retention Audits
+
+`context-audit` streams coding-agent JSONL transcripts and compares two equal-budget policies:
+
+- raw tail truncation over text, tool-call, and tool-result events
+- active human request first, followed by recent non-request context
+
+It filters compact summaries, sidechains, metadata, and tool results out of the human-request role;
+uses case-insensitive exact lexical anchors; reports one case per request; and uses
+session-balanced, session-clustered inference. Malformed input counts are reported instead of
+silently discarded. Output is aggregate-only: no transcript text, anchors, or paths.
+
+A version `0.2.0` field run on July 25, 2026, over one private local corpus produced 190 eligible
+cases across 117 sessions. At 256 whitespace tokens, session-balanced exact lexical retention
+increased from `0.422` to `0.707` (`+0.285`, cluster-bootstrap 95% CI `[0.214, 0.351]`). In the
+95-case stratum without an individually oversized intervening message, the delta remained `+0.114`
+(95% CI `[0.020, 0.205]`). The aggregate [result snapshot](examples/context_audit_2026-07-25.json)
+preserves the corpus fingerprint and parse-error counts. The private corpus is not published, so
+the snapshot is auditable but not independently reproducible.
+
+This is an outcome-conditioned lexical-retention result. It is not task success, answer quality,
+semantic retention, causality, or evidence that the effect generalizes across users.
 
 ## Adoption Reports
 

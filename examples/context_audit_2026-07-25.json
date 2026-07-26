@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "tool_version": "0.2.0",
+  "run_date": "2026-07-25",
+  "verdict": "LEXICAL_PROXY_SUPPORTED",
+  "source": {
+    "kind": "private local coding-agent transcript corpus",
+    "files_scanned": 351,
+    "sessions_used": 117,
+    "eligible_cases": 190,
+    "fingerprint_sha256": "8e48e4cf84af7dd0478fbd6f927e960c3e001af7167cac3a859f41133c98c83b",
+    "corpus_availability": "not public; aggregate result only",
+    "privacy": "aggregate-only; no transcript text, identifiers, or paths are emitted",
+    "invalid_utf8_lines": 0,
+    "invalid_json_lines": 0,
+    "invalid_record_lines": 0
+  },
+  "budget_whitespace_tokens": 256,
+  "baseline": "raw tail truncation over text, tool-call, and tool-result events",
+  "treatment": "active human request first, then recent non-request context",
+  "anchor_heuristic": "case-insensitive exact lexical anchors: flags, code-like compound tokens, long alphanumeric terms, and numeric strings",
+  "metrics": {
+    "sessions": 117,
+    "max_cases_from_one_session": 74,
+    "session_balanced_baseline_recall": 0.422166,
+    "session_balanced_lifecycle_recall": 0.707274,
+    "session_balanced_delta": 0.285108,
+    "session_cluster_bootstrap_95ci": [
+      0.214251,
+      0.351452
+    ],
+    "session_wins": 81,
+    "session_losses": 18,
+    "session_ties": 18,
+    "session_sign_test_two_sided_p": 1e-10,
+    "no_oversized_message": {
+      "status": "SUPPORTED",
+      "cases": 95,
+      "sessions": 49,
+      "session_balanced_delta": 0.113617,
+      "session_cluster_bootstrap_95ci": [
+        0.020009,
+        0.205113
+      ],
+      "session_sign_test_two_sided_p": 0.0435585219
+    }
+  },
+  "claim_boundary": "Outcome-conditioned exact lexical retention only; not task success, answer quality, semantic retention, causality, or cross-user generalization."
+}

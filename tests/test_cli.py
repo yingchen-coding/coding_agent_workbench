@@ -25,3 +25,50 @@ def test_fail_under_returns_nonzero(capsys):
     code = main(["evaluate", str(_EXAMPLES / "risky_attempt.json"), "--fail-under", "90"])
     assert code == 1
     assert "below threshold" in capsys.readouterr().err
+
+
+def test_context_audit_cli(tmp_path, capsys):
+    corpus = tmp_path / "corpus"
+    corpus.mkdir()
+    for index in range(30):
+        anchor_a = f"target_file_{index}"
+        anchor_b = f"--target-flag-{index}"
+        rows = [
+            {
+                "type": "user",
+                "message": {
+                    "role": "user",
+                    "content": f"Update {anchor_a} with {anchor_b}.",
+                },
+            },
+            {
+                "type": "assistant",
+                "message": {
+                    "role": "assistant",
+                    "content": " ".join(f"noise_a_{index}_{n}" for n in range(40)),
+                },
+            },
+            {
+                "type": "assistant",
+                "message": {
+                    "role": "assistant",
+                    "content": " ".join(f"noise_b_{index}_{n}" for n in range(40)),
+                },
+            },
+            {
+                "type": "assistant",
+                "message": {
+                    "role": "assistant",
+                    "content": f"Updated {anchor_a} with {anchor_b}.",
+                },
+            },
+        ]
+        (corpus / f"{index}.jsonl").write_text(
+            "\n".join(json.dumps(row) for row in rows) + "\n",
+            encoding="utf-8",
+        )
+
+    assert main(["context-audit", str(corpus), "--budget", "64"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["source"]["eligible_cases"] == 30
+    assert report["verdict"] == "LEXICAL_PROXY_SUPPORTED"

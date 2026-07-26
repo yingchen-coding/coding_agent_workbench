@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from .adoption import adoption_report, load_adoption_records, render_adoption_markdown
+from .context import audit_context, render_context_markdown
 from .io import blank_attempt, load_attempt, render_table, save_json
 from .scoring import check_catalog, evaluate
 
@@ -30,6 +31,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     adoption.add_argument("records", type=Path)
     adoption.add_argument("--format", choices=["json", "markdown"], default="json")
+
+    context = sub.add_parser(
+        "context-audit",
+        help="compare raw-tail and active-request-first context retention",
+    )
+    context.add_argument("corpus", type=Path)
+    context.add_argument("--budget", type=int, default=256)
+    context.add_argument("--format", choices=["json", "markdown"], default="json")
 
     sub.add_parser("list-checks", help="list deterministic scoring checks")
     return parser
@@ -58,6 +67,13 @@ def main(argv: list[str] | None = None) -> int:
         report = adoption_report(load_adoption_records(args.records))
         if args.format == "markdown":
             print(render_adoption_markdown(report), end="")
+        else:
+            print(json.dumps(report, indent=2))
+        return 0
+    if args.command == "context-audit":
+        report = audit_context(args.corpus, budget=args.budget)
+        if args.format == "markdown":
+            print(render_context_markdown(report), end="")
         else:
             print(json.dumps(report, indent=2))
         return 0
