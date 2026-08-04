@@ -109,12 +109,18 @@ def _as_int(value: Any, index: int, field: str) -> int:
 
 
 def _normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any]:
+    tokens = _as_float(raw.get("tokens"), index, "tokens")
+    if tokens < 0:
+        raise ValueError(f"record {index} field 'tokens' cannot be negative")
+    cost = _as_float(raw.get("cost"), index, "cost")
+    if cost < 0:
+        raise ValueError(f"record {index} field 'cost' cannot be negative")
     record = {
         "tool": str(raw.get("tool") or raw.get("agent") or raw.get("provider") or "unknown"),
         "period": str(raw.get("period") or ""),
         "workflow": str(raw.get("workflow") or "unknown"),
-        "tokens": _as_float(raw.get("tokens"), index, "tokens"),
-        "cost": _as_float(raw.get("cost"), index, "cost"),
+        "tokens": tokens,
+        "cost": cost,
     }
     for field in REQUIRED_NUMERIC_FIELDS:
         value = _as_int(raw.get(field), index, field)

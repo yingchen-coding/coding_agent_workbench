@@ -141,6 +141,19 @@ def test_save_json_is_atomic_no_temp_left(tmp_path):
     assert json.loads(p.read_text())["k"] == "v"
 
 
+def test_load_adoption_records_rejects_negative_tokens_or_cost(tmp_path):
+    # A negative cost/tokens value used to pass validation silently and flow into
+    # cost_per_completed_task, producing a nonsensical negative cost figure in the adoption
+    # report instead of a located, actionable error.
+    for field, value in (("tokens", -1), ("cost", -0.01)):
+        path = tmp_path / "adoption.json"
+        path.write_text(
+            json.dumps([{"tool": "a", "attempted_tasks": 1, field: value}]), encoding="utf-8"
+        )
+        with pytest.raises(ValueError, match=f"field '{field}' cannot be negative"):
+            load_adoption_records(path)
+
+
 def test_load_adoption_records_rejects_non_finite_numbers(tmp_path):
     # "nan"/"inf" parse as floats but are not real measurements; int(NaN) would raise a cryptic
     # error, so they must be rejected with the same clear, located message as any other bad number.
